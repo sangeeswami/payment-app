@@ -2,15 +2,21 @@ package my.payments.app.worker;
 
 import java.util.Optional;
 
+import javax.jms.JMSException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.annotation.JmsListenerConfigurer;
+import org.springframework.jms.config.JmsListenerEndpointRegistrar;
+import org.springframework.jms.config.SimpleJmsListenerEndpoint;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.support.converter.MessageConversionException;
+import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.stereotype.Service;
 
-import my.payments.app.controller.PriceInfoController;
 import my.payments.app.dao.Customer;
 import my.payments.app.dao.CustomerRepository;
 import my.payments.app.dao.PriceInfo;
@@ -19,13 +25,18 @@ import my.payments.app.pojo.CustomerListChunkMsg;
 import my.payments.app.pojo.PriceChangeNotificationMsg;
 
 @Service
-public class PriceUpdateChunkProcessImpl implements PriceUpdateChunkProcessor, Runnable {
+public class PriceUpdateChunkProcessImpl implements PriceUpdateChunkProcessor {
 	
 	@Autowired
 	CustomerRepository customerRepo;
 	
 	@Autowired
 	ApplicationContext context;
+	
+	@Autowired
+	MessageConverter jacksonJmsMessageConverter;
+	
+	private String listenerId = "none";
 	
 	private static final Logger logger = LoggerFactory.getLogger(PriceUpdateChunkProcessImpl.class);
 
@@ -69,11 +80,4 @@ public class PriceUpdateChunkProcessImpl implements PriceUpdateChunkProcessor, R
 		return builder.toString();
 		
 	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

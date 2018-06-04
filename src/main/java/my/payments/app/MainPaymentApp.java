@@ -2,10 +2,11 @@ package my.payments.app;
 
 import javax.jms.ConnectionFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jms.annotation.EnableJms;
@@ -16,12 +17,11 @@ import org.springframework.jms.support.converter.MappingJackson2MessageConverter
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
-import my.payments.app.dao.PriceInfoRepository;
 import my.payments.app.pojo.PriceChangeNotificationMsg;
 
 @SpringBootApplication
 @EnableJms
-public class MainPaymentApp {
+public class MainPaymentApp extends SpringBootServletInitializer {
 	
 	public static void main(String[] args) {
 		//SpringApplication.run(MainPaymentApp.class, args);
@@ -35,6 +35,11 @@ public class MainPaymentApp {
  
 	}
 	
+	@Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(MainPaymentApp.class);
+    }
+	
 	@Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
                                                     DefaultJmsListenerContainerFactoryConfigurer configurer) {
@@ -43,6 +48,10 @@ public class MainPaymentApp {
         configurer.configure(factory, connectionFactory);
         // You could still override some of Boot's default if necessary.
         return factory;
+        
+       // factory.createListenerContainer(endpoint).
+        
+        
     }
 	
 	@Bean // Serialize message content to json using TextMessage

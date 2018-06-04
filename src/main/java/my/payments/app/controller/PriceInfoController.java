@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.config.JmsListenerContainerFactory;
+import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import my.payments.app.dao.PriceInfo;
 import my.payments.app.dao.PriceInfoRepository;
+import my.payments.app.pojo.PriceChangeNotificationMsg;
 import my.payments.app.pojo.PriceInfoBean;
+import my.payments.app.worker.MessagingService;
 import my.payments.app.worker.PriceUpdateChecker;
 
 @Controller
@@ -53,4 +57,5 @@ public class PriceInfoController {
 		Boolean priceUpdatesAvailable = priceUpdateChecker.checkForPriceUpdates();
 		return new ResponseEntity<Boolean>(priceUpdatesAvailable, HttpStatus.OK);
 	}
+	
 }
