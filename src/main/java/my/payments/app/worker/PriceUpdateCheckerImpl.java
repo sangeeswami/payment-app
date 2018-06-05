@@ -1,6 +1,7 @@
 package my.payments.app.worker;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class PriceUpdateCheckerImpl implements PriceUpdateChecker {
 	private static final Logger logger = LoggerFactory.getLogger(PriceInfoController.class);
 
 	@Override
-	public Boolean checkForPriceUpdates() {
+	public Boolean checkForPriceUpdates(LocalDate priceCheckerDate) {
 		
 		logger.info("Start... checkForPriceUpdates");
 
@@ -50,9 +51,10 @@ public class PriceUpdateCheckerImpl implements PriceUpdateChecker {
 			
 			logger.info("Processing priceUpdate: " + pendingUpdate.toString());
 			
-			List<String> customerList = customerRepo.findCustomerIdsByPlanIdCountryCodeAndBilldate(
+			List<String> customerList = customerRepo.findCustomerIdsByPlanIdCountryCodeAndDayInterval(
 					pendingUpdate.getPlanCode(), 
-					pendingUpdate.getCountryCode());
+					pendingUpdate.getCountryCode(),
+					priceCheckerDate.plusDays(30));
 			
 			int totalCustomers = customerList.size();
 			logger.info("Number of customers affected = " + customerList.size());

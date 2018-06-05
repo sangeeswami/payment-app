@@ -1,12 +1,12 @@
 package my.payments.app.controller;
 
+import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jms.config.JmsListenerContainerFactory;
-import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import my.payments.app.dao.PriceInfo;
 import my.payments.app.dao.PriceInfoRepository;
-import my.payments.app.pojo.PriceChangeNotificationMsg;
 import my.payments.app.pojo.PriceInfoBean;
-import my.payments.app.worker.MessagingService;
 import my.payments.app.worker.PriceUpdateChecker;
 
 @Controller
@@ -51,11 +49,14 @@ public class PriceInfoController {
 		return new ResponseEntity<PriceInfoBean>(priceInfo, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/schedulePriceChecker", method=RequestMethod.GET)
-	public ResponseEntity<Boolean> startPriceChecker() {
-		logger.info("Calling price checker ...");
-		Boolean priceUpdatesAvailable = priceUpdateChecker.checkForPriceUpdates();
+	@RequestMapping(value="/schedulePriceChecker", method=RequestMethod.POST)
+	public ResponseEntity<Boolean> startPriceChecker(@RequestBody String strDate) {
+		logger.info("Calling price checker for date: " + strDate);
+		//Date fromDate = Date.valueOf(strDate);
+		LocalDate today = LocalDate.parse(strDate);
+		Boolean priceUpdatesAvailable = priceUpdateChecker.checkForPriceUpdates(today);
 		return new ResponseEntity<Boolean>(priceUpdatesAvailable, HttpStatus.OK);
+		//return new ResponseEntity<Boolean>(Boolean.FALSE, HttpStatus.OK);
 	}
 	
 }

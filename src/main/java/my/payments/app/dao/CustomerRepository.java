@@ -1,5 +1,6 @@
 package my.payments.app.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -14,9 +15,10 @@ public interface CustomerRepository extends CrudRepository<Customer, String> {
 	List<Customer> findCustomersByPlanIdAndBilldate(@Param("planCode") String planCode,
 			@Param("countryCode") String countryCode);
 	
-	@Query("select c.email from Customer c where c.status='ACTIVE' and c.planCode=:planCode and c.countryCode=:countryCode")
-	List<String> findCustomerIdsByPlanIdCountryCodeAndBilldate(
+	@Query("select c.email from Customer c where c.status='ACTIVE' and c.planCode=:planCode and c.countryCode=:countryCode and c.nextBilldate=:nextBilldate")
+	List<String> findCustomerIdsByPlanIdCountryCodeAndDayInterval(
 			@Param("planCode") String planCode,
-			@Param("countryCode") String countryCode);
+			@Param("countryCode") String countryCode,
+			@Param("nextBilldate") LocalDate nextBilldate);
 
 }

@@ -1,6 +1,6 @@
 package my.payments.app.dao;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,8 +14,8 @@ public class Customer {
 	private String planCode;
 	private String countryCode;
 	private Long priceId;
-	private Timestamp onboardDate;
-	private Timestamp nextBilldate;
+	private LocalDate onboardDate;
+	private LocalDate nextBilldate;
 	private String status;
 	
 	public String getEmail() {
@@ -53,17 +53,17 @@ public class Customer {
 		this.priceId = priceId;
 	}
 	
-	public Timestamp getOnboardDate() {
+	public LocalDate getOnboardDate() {
 		return this.onboardDate;
 	}
-	public void setOnboardDate(Timestamp onboardDate) {
+	public void setOnboardDate(LocalDate onboardDate) {
 		this.onboardDate = onboardDate;
 	}
 	
-	public Timestamp getNextBilldate() {
+	public LocalDate getNextBilldate() {
 		return this.nextBilldate;
 	}
-	public void setNextBilldate(Timestamp nextBilldate) {
+	public void setNextBilldate(LocalDate nextBilldate) {
 		this.nextBilldate = nextBilldate;
 	}
 	

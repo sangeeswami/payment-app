@@ -1,6 +1,6 @@
 package my.payments.app.dao;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ public class PriceInfo {
 	private String planCode;
 	private String countryCode;
 	private Double price;
-	private Timestamp effectiveDate;
+	private LocalDate effectiveDate;
 	private String status;
 	private String rolloutStatus;
 	
@@ -50,10 +50,10 @@ public class PriceInfo {
 		this.price = price;
 	}
 	
-	public Timestamp getEffectiveDate() {
+	public LocalDate getEffectiveDate() {
 		return this.effectiveDate;
 	}
-	public void setEffectiveDate(Timestamp effectiveDate) {
+	public void setEffectiveDate(LocalDate effectiveDate) {
 		this.effectiveDate = effectiveDate;
 	}
 	
