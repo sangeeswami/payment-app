@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.repository.query.Param;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
@@ -45,9 +46,20 @@ public class PriceUpdateCheckerImpl implements PriceUpdateChecker {
 		logger.info("Number of price updates to process = " + priceInfoList.size());
 		
 		for (PriceInfo pendingUpdate : priceInfoList) {
-			// Get count of customers still on old pricePlan
-			//Date now = new Date();
-			//Timestamp thirtyDaysAfter = new Timestamp(now.getTime() + 86400000 * 30);
+			// Are any customers on old price plans?
+			Boolean allCustomersUpgraded = !customerRepo.allCustomersNotUpgraded(
+					pendingUpdate.getPlanCode(), 
+					pendingUpdate.getCountryCode(),
+					pendingUpdate.getPriceId());
+			
+			if (allCustomersUpgraded.booleanValue()) {
+				pendingUpdate.setRolloutStatus("COMPLETE");
+				priceInfoRepo.save(pendingUpdate);
+				priceInfoRepo.markOldPricesObsolete(pendingUpdate.getPlanCode(), 
+						pendingUpdate.getCountryCode(),
+						pendingUpdate.getPriceId());
+				break;
+			}
 			
 			logger.info("Processing priceUpdate: " + pendingUpdate.toString());
 			

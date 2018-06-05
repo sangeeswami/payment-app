@@ -20,5 +20,12 @@ public interface CustomerRepository extends CrudRepository<Customer, String> {
 			@Param("planCode") String planCode,
 			@Param("countryCode") String countryCode,
 			@Param("nextBilldate") LocalDate nextBilldate);
+	
+	@Query("select count(c) > 0 from Customer c where c.status='ACTIVE' and c.planCode=:planCode and c.countryCode=:countryCode and c.priceId != :priceId")
+	Boolean allCustomersNotUpgraded (
+			@Param("planCode") String planCode,
+			@Param("countryCode") String countryCode,
+			@Param("priceId") Long priceId);
+	
 
 }
